@@ -25,7 +25,7 @@ export const ModalTablePrinter = () => {
 
   const [table, setTable] = useState<number>(0);
 
-  const link_url = `${NEXT_BASE_URL}/client/login?table=${table}`;
+  const link_url = `${NEXT_BASE_URL}/client/login?mesa=${table}`;
 
   async function handleGeneratePdfTable() {
     const doc = new jsPDF('l', 'mm', [50, 50]);
