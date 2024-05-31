@@ -68,13 +68,15 @@ export const ButtonOrderAction = ({ status, order_id }: ButtonOrderProps) => {
   if (status === 'New') {
     return (
       <div className="space-x-3">
-        <button
-          className={cn('p-1 rounded-lg', configButton['Rejected']?.style)}
-          disabled={configButton['Rejected']?.disabled}
-          onClick={configButton['Rejected']?.onClick}
-        >
-          Recusar
-        </button>
+        {!isClient && (
+          <button
+            className={cn('p-1 rounded-lg', configButton['Rejected']?.style)}
+            disabled={configButton['Rejected']?.disabled}
+            onClick={configButton['Rejected']?.onClick}
+          >
+            Recusar
+          </button>
+        )}
 
         <button
           className={cn('p-1 rounded-lg', configButton[status]?.style)}
