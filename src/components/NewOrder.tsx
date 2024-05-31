@@ -37,6 +37,15 @@ export const NewOrder = () => {
       return;
     }
 
+    if (cart.length === 0) {
+      toast.warning('Pedido incompleto', {
+        description: 'Tente adicionar mais produtos',
+        duration: 8000,
+      });
+
+      return;
+    }
+
     try {
       await createOrder({
         products: cart.map((product) => ({
