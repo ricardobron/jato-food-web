@@ -1,6 +1,13 @@
 import { api } from '@/lib/api';
 
-export type OrderStatus = 'New' | 'ToDeliver' | 'Paid' | 'Rejected';
+export type OrderStatus =
+  | 'New'
+  | 'ToDeliver'
+  | 'Paid'
+  | 'Rejected'
+  | 'Unpaid'
+  | 'Delivered'
+  | 'Preparing';
 
 type Order = {
   id: string;

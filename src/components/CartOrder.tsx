@@ -13,17 +13,23 @@ export const CartOrder = ({ data }: IPropsCartOrder) => {
   const formatedDate = format(data.created_at, 'PP, HH:mm', { locale: pt });
 
   const orderColors: Record<OrderStatus, string> = {
-    New: 'bg-[#D634F0]',
-    Paid: 'bg-[#87B6A1]',
-    Rejected: 'bg-[#E4A2B0]',
-    ToDeliver: 'bg-[#FBD0A9]',
+    New: 'bg-[#1E90FF]',
+    Paid: 'bg-[#32CD32]',
+    Rejected: 'bg-[#FF4500]',
+    ToDeliver: 'bg-[#FFA500]',
+    Delivered: 'bg-[#006400]',
+    Preparing: 'bg-[#ADD8E6]',
+    Unpaid: 'bg-[#FFD700]',
   };
 
   const borderColors: Record<OrderStatus, string> = {
-    New: 'border-[#D634F0]',
-    Paid: 'border-[#87B6A1]',
-    Rejected: 'border-[#E4A2B0]',
-    ToDeliver: 'border-[#FBD0A9]',
+    New: 'border-[#1E90FF]',
+    Paid: 'border-[#32CD32]',
+    Rejected: 'border-[#FF4500]',
+    ToDeliver: 'border-[#FFA500]',
+    Delivered: 'border-[#006400]',
+    Preparing: 'border-[#ADD8E6]',
+    Unpaid: 'border-[#FFD700]',
   };
 
   const total = data.order_items

@@ -15,18 +15,30 @@ export const ButtonOrderAction = ({ status, order_id }: ButtonOrderProps) => {
   const isClient = session.data?.user.role === 'USER';
 
   function handleClickButtonOrder(status: OrderStatus) {
-    console.log({ status });
+    // console.log({ status });
 
-    if (status === 'New') {
-      updateOrder({ status: 'ToDeliver', order_id: order_id });
+    if (status === 'Unpaid') {
+      updateOrder({ status: 'Unpaid', order_id: order_id });
     }
 
     if (status === 'Rejected') {
       updateOrder({ status: 'Rejected', order_id: order_id });
     }
 
-    if (status === 'ToDeliver') {
+    if (status === 'Paid') {
       updateOrder({ status: 'Paid', order_id: order_id });
+    }
+
+    if (status === 'Preparing') {
+      updateOrder({ status: 'Preparing', order_id: order_id });
+    }
+
+    if (status === 'ToDeliver') {
+      updateOrder({ status: 'ToDeliver', order_id: order_id });
+    }
+
+    if (status === 'Delivered') {
+      updateOrder({ status: 'Delivered', order_id: order_id });
     }
   }
 
@@ -39,28 +51,45 @@ export const ButtonOrderAction = ({ status, order_id }: ButtonOrderProps) => {
       disabled?: boolean;
     }
   > = {
-    ToDeliver: {
-      name: isClient ? 'Por pagar' : 'Pagar',
-      onClick: () => handleClickButtonOrder('ToDeliver'),
-      style: 'border-2 border-[#FBD0A9] bg-[#FBD0A]/10 text-[#FBD0A9]',
+    New: {
+      name: isClient ? 'Por validar' : 'Validar',
+      onClick: () => handleClickButtonOrder('Unpaid'),
+      style: 'border-2 border-[#1E90FF] bg-[#1E90FF]/10 text-[#1E90FF]',
       disabled: isClient,
     },
-    New: {
-      name: 'Por validar',
-      onClick: () => handleClickButtonOrder('New'),
-      style: 'border-2 border-[#D634F0] bg-[#D634F0]/10 text-[#D634F0]',
+    Unpaid: {
+      name: isClient ? 'Por pagar' : 'Pagar',
+      onClick: () => handleClickButtonOrder('Paid'),
+      style: 'border-2 border-[#FFD700] bg-[#FFD700]/10 text-[#FFD700]',
       disabled: isClient,
     },
     Paid: {
-      name: 'Pago',
-      onClick: () => {},
-      style: 'border-2 border-[#87B6A1] bg-[#87B6A1]/10 text-[#87B6A1]',
+      name: isClient ? 'A preparar' : 'Preparar',
+      onClick: () => handleClickButtonOrder('Preparing'),
+      style: 'border-2 border-[#32CD32] bg-[#32CD32]/10 text-[#32CD32]',
+      disabled: isClient,
+    },
+    Preparing: {
+      name: isClient ? 'Em preparação' : 'Pronto',
+      onClick: () => handleClickButtonOrder('ToDeliver'),
+      style: 'border-2 border-[#ADD8E6] bg-[#ADD8E6]/10 text-[#ADD8E6]',
+      disabled: isClient,
+    },
+    ToDeliver: {
+      name: isClient ? 'Por entregar' : 'Entregar',
+      onClick: () => handleClickButtonOrder('Delivered'),
+      style: 'border-2 border-[#FFA500] bg-[#FFA500]/10 text-[#FFA500]',
+      disabled: isClient,
+    },
+    Delivered: {
+      name: 'Entrege',
+      style: 'border-2 border-[#006400] bg-[#006400]/10 text-[#006400]',
       disabled: true,
     },
     Rejected: {
       name: 'Recusado',
       onClick: () => handleClickButtonOrder('Rejected'),
-      style: 'border-2 border-[#E4A2B0] bg-[#E4A2B0]/10 text-[#E4A2B0]',
+      style: 'border-2 border-[#FF4500] bg-[#FF4500]/10 text-[#FF4500]',
       disabled: status === 'Rejected' || isClient,
     },
   };
