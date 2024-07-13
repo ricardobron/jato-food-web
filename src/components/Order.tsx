@@ -66,14 +66,6 @@ export const Order = () => {
 
   useEffect(() => {
     socket?.on('order_updated', (data: ICreatedOrderSocket) => {
-      if (Notification.permission === 'granted') {
-        new Notification(`Pedido ${data.order_number}`, {
-          body: `Pedido nº ${data.order_number} mudou de estado para ${
-            statusOrderTranslate[data.status]
-          }.`,
-        });
-      }
-
       setOrders((state) => {
         const _clone = [...state];
 

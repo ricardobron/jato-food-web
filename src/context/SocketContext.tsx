@@ -40,10 +40,6 @@ export const SocketContextProvider = ({
   const jwt = session.data?.jwt;
 
   useEffect(() => {
-    Notification.requestPermission();
-  }, []);
-
-  useEffect(() => {
     if (jwt) {
       const newSocket = socketClientIo(API_BASE_URL, {
         reconnection: true,
