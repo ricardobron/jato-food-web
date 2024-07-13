@@ -16,11 +16,29 @@ export async function generateTableQrCode(
     scale: 3,
   });
 
-  doc.setFontSize(8);
   doc.setFont('Inter-Regular', 'bold');
 
-  const heightBarCode = 30;
-  doc.addImage(canvas.toDataURL('image/png'), 'PNG', 10, 10, 30, 30);
+  doc.setFontSize(18);
+  doc.text(`Mesa: ${table}`, 15, 8);
+
+  doc.addImage(canvas.toDataURL('image/png'), 'PNG', 10, 12, 30, 30);
+
+  doc.save(filename);
+}
+
+export async function generatePinQrCode(
+  doc: jsPDF,
+  table: number,
+  pin: string
+) {
+  const filename = `qrcode-table-pin-${table}`;
+
+  doc.setFontSize(18);
+  doc.setFont('Inter-Regular', 'bold');
+
+  doc.text(`Mesa: ${table} `, 10, 15);
+  doc.setFontSize(10);
+  doc.text(`Pin: ${pin}`, 10, 25);
 
   doc.save(filename);
 }

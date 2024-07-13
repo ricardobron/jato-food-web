@@ -13,23 +13,15 @@ export const CartOrder = ({ data }: IPropsCartOrder) => {
   const formatedDate = format(data.created_at, 'PP, HH:mm', { locale: pt });
 
   const orderColors: Record<OrderStatus, string> = {
-    New: 'bg-[#1E90FF]',
-    Paid: 'bg-[#32CD32]',
-    Rejected: 'bg-[#FF4500]',
-    ToDeliver: 'bg-[#FFA500]',
-    Delivered: 'bg-[#006400]',
     Preparing: 'bg-[#ADD8E6]',
-    Unpaid: 'bg-[#FFD700]',
+    Delivered: 'bg-[#006400]',
+    Paid: 'bg-[#32CD32]',
   };
 
   const borderColors: Record<OrderStatus, string> = {
-    New: 'border-[#1E90FF]',
-    Paid: 'border-[#32CD32]',
-    Rejected: 'border-[#FF4500]',
-    ToDeliver: 'border-[#FFA500]',
-    Delivered: 'border-[#006400]',
     Preparing: 'border-[#ADD8E6]',
-    Unpaid: 'border-[#FFD700]',
+    Delivered: 'border-[#006400]',
+    Paid: 'border-[#32CD32]',
   };
 
   const total = data.order_items
@@ -73,7 +65,7 @@ export const CartOrder = ({ data }: IPropsCartOrder) => {
             </div>
           ))}
         </div>
-        <p className="text-end mt-2">Total: {total}€</p>
+        <p className="text-end mt-2 self-end">Total: {total}€</p>
         <div className="flex flex-row justify-between mt-2 items-center">
           <span className="text-[14px] text-[#797B7E]">
             X{data.order_items.length} Produtos

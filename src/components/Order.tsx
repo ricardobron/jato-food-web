@@ -1,7 +1,12 @@
 'use client';
 
 import { useSocket } from '@/context/SocketContext';
-import { ICreatedOrderSocket, IFindOrders, getOrders } from '@/service/order';
+import {
+  ICreatedOrderSocket,
+  IFindOrders,
+  OrderStatus,
+  getOrders,
+} from '@/service/order';
 
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
@@ -18,6 +23,12 @@ export const Order = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [buttonOrderStatus, setButtonStatus] =
     useState<IOrderStatusComponent>('All');
+
+  const statusOrderTranslate: Record<OrderStatus, string> = {
+    Delivered: 'entregue',
+    Paid: 'pago',
+    Preparing: 'em preparação',
+  };
 
   const filterOrder = orders.filter((order) =>
     buttonOrderStatus === 'All' ? true : order.status === buttonOrderStatus
@@ -50,10 +61,19 @@ export const Order = () => {
     return () => {
       socket?.off('order_created');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
   useEffect(() => {
     socket?.on('order_updated', (data: ICreatedOrderSocket) => {
+      if (Notification.permission === 'granted') {
+        new Notification(`Pedido ${data.order_number}`, {
+          body: `Pedido nº ${data.order_number} mudou de estado para ${
+            statusOrderTranslate[data.status]
+          }.`,
+        });
+      }
+
       setOrders((state) => {
         const _clone = [...state];
 

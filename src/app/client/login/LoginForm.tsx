@@ -24,10 +24,11 @@ import validator from 'validator';
 import { toast } from 'sonner';
 
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 const LoginClientSchema = z.object({
-  mesa: z
+  table: z
     .number()
     .or(z.string())
     .optional()
@@ -40,10 +41,7 @@ const LoginClientSchema = z.object({
     .refine((value) => validator.isMobilePhone(value, 'pt-PT'), {
       message: 'Insira um número válido',
     }),
-  code: z
-    .string()
-    .min(4, { message: 'Tem de ter pelo menos 4 caracteres' })
-    .max(8, { message: 'Só pode ter no máximo 8 caracteres' }),
+  pin_table: z.string().length(6, { message: 'Tem de ter 6 caracteres' }),
 });
 
 type LoginSchema = z.infer<typeof LoginClientSchema>;
@@ -51,27 +49,21 @@ export const LoginForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const _mesa = searchParams.get('mesa');
+  const [showPinTable, setShowPinTable] = useState(false);
+
+  const _table = searchParams.get('mesa');
 
   const form = useForm<LoginSchema>({
     resolver: zodResolver(LoginClientSchema),
     defaultValues: {
-      mesa: _mesa ? Number(_mesa) : 0,
+      table: _table ? Number(_table) : 0,
       phone_number: '',
-      code: '',
+      pin_table: '',
     },
   });
 
-  const mesaForm = form.watch('mesa');
-
-  useEffect(() => {
-    if (mesaForm) {
-      localStorage.setItem('@JATO:FOOD:TABLE', String(mesaForm));
-    }
-  }, [mesaForm]);
-
-  async function onSubmit({ code, phone_number, mesa }: LoginSchema) {
-    if (!mesa) {
+  async function onSubmit({ pin_table, phone_number, table }: LoginSchema) {
+    if (!table) {
       return toast.warning('Mesa não definida', {
         description: 'Tente ler o código QRCode de novo',
         duration: 8000,
@@ -79,14 +71,17 @@ export const LoginForm = () => {
     }
 
     const response = await signIn('credentials', {
-      code,
+      pin_table,
       phone_number,
+      table,
       type: 'client',
       redirect: false,
     });
 
+    localStorage.setItem('@JATO:FOOD:TABLE', String(table));
+
     if (!response?.ok) {
-      toast.error('Número de telemóvel ou código inválidos');
+      toast.error('Número de telemóvel ou pin inválidos');
     } else {
       router.push('/client');
     }
@@ -98,7 +93,7 @@ export const LoginForm = () => {
         {/* field mesa */}
         <FormField
           control={form.control}
-          name="mesa"
+          name="table"
           render={({ field }) => (
             <FormItem className="flex-1">
               <FormLabel>Número de Mesa</FormLabel>
@@ -126,12 +121,29 @@ export const LoginForm = () => {
 
         <FormField
           control={form.control}
-          name="code"
+          name="pin_table"
           render={({ field }) => (
             <FormItem className="flex-1">
-              <FormLabel>Código (à sua escolha) (*)</FormLabel>
+              <FormLabel>Pin da Mesa (*)</FormLabel>
               <FormControl>
-                <Input type="password" {...field} onChange={field.onChange} />
+                <div className="flex flex-row items-center gap-4">
+                  <Input
+                    type={showPinTable ? 'text' : 'password'}
+                    {...field}
+                    onChange={field.onChange}
+                  />
+                  <button
+                    type="button"
+                    className="p-2 bg-orange-600 hover:bg-orange-600/55 rounded-lg"
+                    onClick={() => setShowPinTable((prev) => !prev)}
+                  >
+                    {showPinTable ? (
+                      <EyeIcon className="h-4 w-4" aria-hidden="true" />
+                    ) : (
+                      <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
+                    )}
+                  </button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

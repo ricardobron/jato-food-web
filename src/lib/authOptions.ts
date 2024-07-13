@@ -16,7 +16,7 @@ export const authOptions: AuthOptions = {
       name: 'credentials',
       credentials: {},
       async authorize(credentials) {
-        const { phone_number, code, type, email, password } =
+        const { phone_number, pin_table, type, email, password, table } =
           credentials as any;
 
         try {
@@ -25,7 +25,8 @@ export const authOptions: AuthOptions = {
           if (type === 'client') {
             response = await api.post('/auth/client', {
               phone_number,
-              code,
+              pin_table,
+              table: Number(table),
             });
           }
 
@@ -34,8 +35,6 @@ export const authOptions: AuthOptions = {
               email,
               password,
             });
-
-            console.log(response);
           }
 
           if (!response?.data) {

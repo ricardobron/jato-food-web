@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { PlusCircle } from 'lucide-react';
 
+import Swal from 'sweetalert2';
+
 import { InputText } from './InputText';
 import { ListProducts } from './ListProducts';
 
@@ -47,16 +49,27 @@ export const NewOrder = () => {
     }
 
     try {
-      await createOrder({
-        products: cart.map((product) => ({
-          id: product.id,
-          quantity: product.quantity,
-        })),
-        table: String(table),
+      const result = await Swal.fire({
+        title: 'Deseja confirmar o pedido?',
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'Confirmar',
+        confirmButtonColor: '#FABF35',
       });
 
-      clearCart();
-      handleChangeButtonOption('my_orders');
+      if (result.isConfirmed) {
+        await createOrder({
+          products: cart.map((product) => ({
+            id: product.id,
+            quantity: product.quantity,
+          })),
+          table_number: String(table),
+        });
+
+        clearCart();
+        handleChangeButtonOption('my_orders');
+      }
     } catch {
       toast.error('Não foi possível criar o pedido');
     }

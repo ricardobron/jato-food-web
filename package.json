@@ -38,6 +38,7 @@
     "react-perfect-scrollbar": "^1.5.8",
     "socket.io-client": "^4.7.5",
     "sonner": "^1.4.41",
+    "sweetalert2": "^11.12.2",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "validator": "^13.11.0",

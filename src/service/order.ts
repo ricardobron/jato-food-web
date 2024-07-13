@@ -1,13 +1,6 @@
 import { api } from '@/lib/api';
 
-export type OrderStatus =
-  | 'New'
-  | 'ToDeliver'
-  | 'Paid'
-  | 'Rejected'
-  | 'Unpaid'
-  | 'Delivered'
-  | 'Preparing';
+export type OrderStatus = 'Paid' | 'Delivered' | 'Preparing';
 
 type Order = {
   id: string;
@@ -41,7 +34,7 @@ interface IProductsOrder {
 
 interface ICreateOrder {
   products: IProductsOrder[];
-  table: string;
+  table_number: string;
 }
 
 interface IUpdateOrder {
