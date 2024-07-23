@@ -24,25 +24,23 @@ export const ButtonStatusOrder = ({ onChange }: IPropsButtonStatusOrder) => {
       style: 'text-black border-2 border-black',
       onClick: () => handleChangeButtonStatusOrder('All'),
     },
-
-    {
-      type: 'Paid',
-      name: 'Pago',
-      style: 'border-2 border-[#32CD32] bg-[#32CD32] px-2',
-      onClick: () => handleChangeButtonStatusOrder('Paid'),
-    },
     {
       type: 'Preparing',
       name: 'A preparar',
       style: 'border-2 border-[#ADD8E6] bg-[#ADD8E6] px-2',
       onClick: () => handleChangeButtonStatusOrder('Preparing'),
     },
-
     {
       type: 'Delivered',
       name: 'Entregue',
       style: 'border-2 border-[#006400] bg-[#006400] px-2',
       onClick: () => handleChangeButtonStatusOrder('Delivered'),
+    },
+    {
+      type: 'Paid',
+      name: 'Pago',
+      style: 'border-2 border-[#32CD32] bg-[#32CD32] px-2',
+      onClick: () => handleChangeButtonStatusOrder('Paid'),
     },
   ];
 

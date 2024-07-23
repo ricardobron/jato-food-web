@@ -16,15 +16,40 @@ type Order = {
 
 export type ICreatedOrderSocket = IFindOrders;
 
+export interface ISockeUpdateOrderItem {
+  order_id: string;
+  order_item_id: string;
+  checked: boolean;
+}
+
+export interface ISockeOrderItemUpdated {
+  id: string;
+  order_id: string;
+  product_id: string;
+  price: number;
+  quantity: number;
+  checked: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
+
 // API //
+
+export interface IOrderItem {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+  checked: boolean;
+}
+
+export interface IOrderItemComponent extends IOrderItem {
+  loading?: boolean;
+}
 
 export type IFindOrders = Order & {
   order_number: number;
-  order_items: {
-    name: string;
-    quantity: number;
-    price: number;
-  }[];
+  order_items: IOrderItem[];
 };
 
 interface IProductsOrder {

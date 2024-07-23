@@ -4,12 +4,17 @@ import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { ButtonOrderAction } from './ButtonOrderAction';
+import { useSession } from 'next-auth/react';
+import { Orders } from './Order';
+import { Loader } from 'lucide-react';
 
 interface IPropsCartOrder {
-  data: IFindOrders;
+  data: Orders;
+  handleCheckOrderItem: (order_item_id: string, checked: boolean) => void;
 }
 
-export const CartOrder = ({ data }: IPropsCartOrder) => {
+export const CartOrder = ({ data, handleCheckOrderItem }: IPropsCartOrder) => {
+  const { data: user } = useSession();
   const formatedDate = format(data.created_at, 'PP, HH:mm', { locale: pt });
 
   const orderColors: Record<OrderStatus, string> = {
@@ -59,6 +64,22 @@ export const CartOrder = ({ data }: IPropsCartOrder) => {
               className="flex flex-row text-[16px] font-normal border-b-2 pb-2"
               key={index}
             >
+              {user?.user.role === 'ADMIN' && (
+                <>
+                  {order_item.loading ? (
+                    <Loader className="animate-spin " />
+                  ) : (
+                    <input
+                      type="checkbox"
+                      className="mr-2"
+                      checked={order_item.checked}
+                      onChange={(e) =>
+                        handleCheckOrderItem(order_item.id, e.target.checked)
+                      }
+                    />
+                  )}
+                </>
+              )}
               <p className="flex-1">{order_item.name}</p>
               <p className="mr-4">{order_item.price}€</p>
               <p className="w-[55px] text-end">Qtd: {order_item.quantity}</p>

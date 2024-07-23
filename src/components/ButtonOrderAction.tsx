@@ -1,5 +1,4 @@
 import { OrderStatus, updateOrder } from '@/service/order';
-import { ButtonProps } from './Button';
 import { cn } from '@/lib/utils';
 import { type ClassValue } from 'clsx';
 import { useSession } from 'next-auth/react';
