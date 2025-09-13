@@ -33,13 +33,15 @@ export const NewOrder = () => {
   async function handleCreateOrder() {
     api.defaults.headers.Authorization = `Bearer ${session.data?.jwt}`;
 
+    const cartOrder = cart.filter((_cart) => _cart.quantity > 0);
+
     if (!table) {
       setShowAlertMissingTable(true);
 
       return;
     }
 
-    if (cart.length === 0) {
+    if (cartOrder.length === 0) {
       toast.warning('Pedido incompleto', {
         description: 'Tente adicionar mais produtos',
         duration: 8000,
@@ -60,7 +62,7 @@ export const NewOrder = () => {
 
       if (result.isConfirmed) {
         await createOrder({
-          products: cart.map((product) => ({
+          products: cartOrder.map((product) => ({
             id: product.id,
             quantity: product.quantity,
           })),

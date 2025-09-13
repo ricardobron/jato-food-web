@@ -11,11 +11,12 @@ import {
 } from '@/service/order';
 
 import { useSession } from 'next-auth/react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { ButtonStatusOrder, IOrderStatusComponent } from './ButtonStatusOrder';
 import { CartOrder } from './CartOrder';
 import { Loader } from 'lucide-react';
+import { InputSelect } from './InputSelect';
 
 export type Orders = Omit<IFindOrders, 'order_items'> & {
   order_items: IOrderItemComponent[];
@@ -27,12 +28,32 @@ export const Order = () => {
 
   const [orders, setOrders] = useState<Orders[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [selectedTable, setSelectedTable] = useState<string | undefined>('');
+
   const [buttonOrderStatus, setButtonStatus] =
     useState<IOrderStatusComponent>('All');
 
-  const filterOrder = orders.filter((order) =>
-    buttonOrderStatus === 'All' ? true : order.status === buttonOrderStatus
-  );
+  const filteredByStatus = useMemo(() => {
+    return orders.filter((order) =>
+      buttonOrderStatus === 'All' ? true : order.status === buttonOrderStatus
+    );
+  }, [orders, buttonOrderStatus]);
+
+  const selectedTableGroup = useMemo(() => {
+    if (!selectedTable) return null;
+    const group = filteredByStatus
+      .filter((o) => String(o.table) === String(selectedTable))
+      .sort((a, b) => {
+        const aT = (a as any).updated_at ?? (a as any).created_at ?? 0;
+        const bT = (b as any).updated_at ?? (b as any).created_at ?? 0;
+        return bT - aT; // mais recente primeiro
+      });
+
+    return {
+      table: selectedTable,
+      orders: group,
+    };
+  }, [filteredByStatus, selectedTable]);
 
   //order created
   useEffect(() => {
@@ -161,16 +182,59 @@ export const Order = () => {
     [socket]
   );
 
+  const tableOptions = useMemo(
+    () =>
+      Array.from(new Set(orders.map((o) => o.table)))
+        .filter(Boolean)
+        .sort((a, b) => String(a).localeCompare(String(b)))
+        .map((t) => ({ label: `Mesa ${t}`, value: String(t) })),
+    [orders]
+  );
+
+  const listToRender = selectedTable
+    ? selectedTableGroup?.orders ?? []
+    : filteredByStatus;
+
   return (
     <div className="pt-4 w-[100%] px-4 flex flex-col items-center">
       <ButtonStatusOrder onChange={(value) => setButtonStatus(value as any)} />
+
+      {session.data?.user.role === 'ADMIN' && (
+        <>
+          <div className=" w-full mt-6 max-w-[640px] mx-auto flex justify-center gap-2 items-center">
+            <InputSelect
+              value={selectedTable || ''}
+              onChange={(v?: string) => setSelectedTable(v || '')}
+              options={[
+                { label: 'Todas as mesas', value: '' },
+                ...tableOptions,
+              ]}
+            />
+            {selectedTable && (
+              <button
+                className="text-sm underline"
+                onClick={() => setSelectedTable('')}
+              >
+                Limpar mesa
+              </button>
+            )}
+          </div>
+
+          {selectedTable && (
+            <h3 className="mt-4 text-lg font-semibold">
+              Mesa {selectedTable} — {selectedTableGroup?.orders.length ?? 0}{' '}
+              pedidos
+            </h3>
+          )}
+        </>
+      )}
 
       <div className="flex flex-row gap-6 flex-wrap justify-center mt-4">
         {isLoading ? (
           <Loader size={30} className="animate-spin text-orange-400" />
         ) : (
           <>
-            {filterOrder.map((pr) => (
+            {listToRender.map((pr) => (
               <CartOrder
                 key={pr.id}
                 data={pr}
