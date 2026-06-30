@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -24,6 +24,10 @@ const ORDER: OrderStatus[] = ['Preparing', 'Delivered', 'Paid'];
 export const OrderStatusSelect = ({ orderId, status }: Props) => {
   const [value, setValue] = useState<OrderStatus>(status);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setValue(status);
+  }, [status]);
 
   async function handleChange(next: string) {
     const prev = value;
