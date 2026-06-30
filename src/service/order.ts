@@ -49,6 +49,7 @@ export interface IOrderItemComponent extends IOrderItem {
 
 export type IFindOrders = Order & {
   order_number: number;
+  phone_number: string;
   order_items: IOrderItem[];
 };
 
@@ -81,4 +82,31 @@ export const createOrder = async (data: ICreateOrder) => {
 
 export const updateOrder = async (data: IUpdateOrder) => {
   await api.put(`/order/${data.order_id}`, { status: data.status });
+};
+
+interface IProductInput {
+  id: string;
+  quantity: number;
+}
+
+export const createOrderAdmin = async (data: {
+  table_number: string;
+  phone_number: string;
+  products: IProductInput[];
+}) => {
+  await api.post('/order/admin', data);
+};
+
+export const updateOrderItems = async (
+  order_id: string,
+  products: IProductInput[]
+) => {
+  await api.patch(`/order/${order_id}/items`, { products });
+};
+
+export const updateOrderStatus = async (
+  order_id: string,
+  status: OrderStatus
+) => {
+  await api.patch(`/order/${order_id}/status`, { status });
 };
