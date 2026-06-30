@@ -15,6 +15,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { ButtonStatusOrder, IOrderStatusComponent } from './ButtonStatusOrder';
 import { CartOrder } from './CartOrder';
+import { ModalCreateOrder } from './ModalCreateOrder';
 import { Loader } from 'lucide-react';
 
 export type Orders = Omit<IFindOrders, 'order_items'> & {
@@ -163,6 +164,11 @@ export const Order = () => {
 
   return (
     <div className="flex w-[100%] flex-col items-center px-4 pt-6">
+      {session.data?.user.role === 'ADMIN' && (
+        <div className="mb-4 flex w-full justify-end">
+          <ModalCreateOrder />
+        </div>
+      )}
       <ButtonStatusOrder onChange={(value) => setButtonStatus(value as any)} />
 
       <div className="mt-6 flex flex-row flex-wrap justify-center gap-6">
