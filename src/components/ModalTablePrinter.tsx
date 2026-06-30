@@ -80,7 +80,12 @@ export const ModalTablePrinter = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <QrCode className="text-white w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] cursor-pointer" />
+        <button
+          title="QR Code da mesa"
+          className="flex h-11 w-11 items-center justify-center rounded-2xl text-cream/60 transition-colors hover:bg-white/10 hover:text-cream sm:h-12 sm:w-12"
+        >
+          <QrCode className="h-[22px] w-[22px] sm:h-[26px] sm:w-[26px]" />
+        </button>
       </DialogTrigger>
       <DialogContent className="max-w-[350px] md:max-w-3xl dark:bg-[#1D1D1D] flex flex-col items-center justify-center">
         <DialogHeader>
@@ -91,7 +96,7 @@ export const ModalTablePrinter = () => {
         </DialogHeader>
         <div className="inline-flex gap-8 items-center">
           <div className="inline mt-4">
-            <Label className="font-Poppins font-normal text-[16px]">
+            <Label className="font-display text-base font-medium">
               Mesa:
             </Label>
             <Input
@@ -116,7 +121,7 @@ export const ModalTablePrinter = () => {
           </div>
           <button
             onClick={handleGetPinTable}
-            className="bg-[#FAC400] hover:bg-[#FAC400]/55 p-2 rounded-lg text-white mt-8"
+            className="mt-8 rounded-full border-2 border-flame px-4 py-2 font-semibold text-flame transition-colors hover:bg-flame/10"
           >
             Ver Pin
           </button>
@@ -143,7 +148,7 @@ export const ModalTablePrinter = () => {
 
         <DialogFooter>
           <Button
-            className="bg-[#FAC400] text-white py-2 px-4 hover:bg-[#FAC400]/60"
+            className="jato-flame rounded-full px-5 py-2 font-semibold text-white shadow-md shadow-flame/25"
             type="submit"
             onClick={handleGenerateQrcodePdfTable}
           >
@@ -151,7 +156,7 @@ export const ModalTablePrinter = () => {
           </Button>
 
           <Button
-            className="bg-[#FAC400] text-white py-2 px-4 hover:bg-[#FAC400]/60"
+            className="rounded-full border-2 border-charcoal/15 bg-white px-5 py-2 font-semibold text-charcoal hover:border-flame hover:text-flame"
             type="submit"
             onClick={handleGenerateQrcodePdfPin}
           >

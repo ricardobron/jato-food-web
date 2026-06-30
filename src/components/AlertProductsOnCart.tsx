@@ -29,16 +29,16 @@ export function AlertProductsOnCart({
         </AlertDialogHeader>
         <AlertDialogFooter className="flex flex-wrap gap-2">
           <AlertDialogAction
-            className="bg-[#87B6A1] hover:bg-[#87B6A1]/50"
+            className="jato-flame rounded-full font-semibold text-white"
             onClick={() => keepCart?.(true)}
           >
-            Sim
+            Manter
           </AlertDialogAction>
           <AlertDialogCancel
-            className="bg-red-400 text-white hover:bg-red-400/50"
+            className="rounded-full"
             onClick={() => keepCart?.(false)}
           >
-            Não
+            Descartar
           </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>

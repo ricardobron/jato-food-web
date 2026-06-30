@@ -10,7 +10,7 @@ export const Button = ({ className, ...props }: ButtonProps) => {
   return (
     <ButtonUi
       className={cn(
-        'w-full bg-orange-600 text-white hover:bg-orange-600/55 mt-8',
+        'jato-flame mt-8 h-11 w-full rounded-full font-semibold text-white shadow-md shadow-flame/25 transition-transform hover:scale-[1.01]',
         className
       )}
       {...props}

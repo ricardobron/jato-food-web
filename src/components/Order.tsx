@@ -162,12 +162,17 @@ export const Order = () => {
   );
 
   return (
-    <div className="pt-4 w-[100%] px-4 flex flex-col items-center">
+    <div className="flex w-[100%] flex-col items-center px-4 pt-6">
       <ButtonStatusOrder onChange={(value) => setButtonStatus(value as any)} />
 
-      <div className="flex flex-row gap-6 flex-wrap justify-center mt-4">
+      <div className="mt-6 flex flex-row flex-wrap justify-center gap-6">
         {isLoading ? (
-          <Loader size={30} className="animate-spin text-orange-400" />
+          <Loader size={30} className="animate-spin text-flame" />
+        ) : filterOrder.length === 0 ? (
+          <p className="mt-12 text-center text-charcoal/50">
+            Ainda não há pedidos por aqui. Assim que entrar um, aparece neste
+            instante.
+          </p>
         ) : (
           <>
             {filterOrder.map((pr) => (

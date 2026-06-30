@@ -134,7 +134,7 @@ export const LoginForm = () => {
                   />
                   <button
                     type="button"
-                    className="p-2 bg-orange-600 hover:bg-orange-600/55 rounded-lg"
+                    className="rounded-xl bg-flame p-2.5 text-white transition-colors hover:bg-flame-600"
                     onClick={() => setShowPinTable((prev) => !prev)}
                   >
                     {showPinTable ? (
