@@ -6,6 +6,9 @@ import { useSession } from 'next-auth/react';
 import { Orders } from './Order';
 import { Loader } from 'lucide-react';
 import { ORDER_STATUS_META } from '@/constants/orderStatus';
+import { OrderCustomerPopover } from './OrderCustomerPopover';
+import { OrderStatusSelect } from './OrderStatusSelect';
+import { ModalEditOrder } from './ModalEditOrder';
 
 interface IPropsCartOrder {
   data: Orders;
@@ -14,6 +17,7 @@ interface IPropsCartOrder {
 
 export const CartOrder = ({ data, handleCheckOrderItem }: IPropsCartOrder) => {
   const { data: user } = useSession();
+  const isAdmin = user?.user.role === 'ADMIN';
   const formatedDate = format(data.created_at, 'PP, HH:mm', { locale: pt });
 
   const status = ORDER_STATUS_META[data.status];
@@ -39,14 +43,20 @@ export const CartOrder = ({ data, handleCheckOrderItem }: IPropsCartOrder) => {
             <span className="inline-flex rounded-full bg-charcoal px-2.5 py-1 text-xs font-semibold text-cream">
               Mesa {data.table}
             </span>
-            <p
-              className={cn(
-                'mt-1.5 inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold',
-                status.soft
-              )}
-            >
-              {status.label}
-            </p>
+            {isAdmin ? (
+              <div className="mt-1.5">
+                <OrderStatusSelect orderId={data.id} status={data.status} />
+              </div>
+            ) : (
+              <p
+                className={cn(
+                  'mt-1.5 inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold',
+                  status.soft
+                )}
+              >
+                {status.label}
+              </p>
+            )}
           </div>
         </div>
 
@@ -92,10 +102,20 @@ export const CartOrder = ({ data, handleCheckOrderItem }: IPropsCartOrder) => {
           Total: <span className="text-flame">{total}€</span>
         </p>
         <div className="mt-2 flex flex-row items-center justify-between">
-          <span className="text-sm text-charcoal/50">
-            {data.order_items.length} produto
-            {data.order_items.length === 1 ? '' : 's'}
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-charcoal/50">
+              {data.order_items.length} produto
+              {data.order_items.length === 1 ? '' : 's'}
+            </span>
+            {isAdmin && (
+              <OrderCustomerPopover
+                phone={data.phone_number}
+                table={data.table}
+                createdAt={data.created_at}
+              />
+            )}
+            {isAdmin && data.status !== 'Paid' && <ModalEditOrder order={data} />}
+          </div>
           <ButtonOrderAction status={data.status} order_id={data.id} />
         </div>
       </div>
