@@ -10,6 +10,7 @@ import { OrderCustomerPopover } from './OrderCustomerPopover';
 import { OrderStatusSelect } from './OrderStatusSelect';
 import { ModalEditOrder } from './ModalEditOrder';
 import { PaymentDrawer } from './PaymentDrawer';
+import { NotifyClientModal } from './NotifyClientModal';
 
 interface IPropsCartOrder {
   data: Orders;
@@ -127,6 +128,11 @@ export const CartOrder = ({ data, handleCheckOrderItem }: IPropsCartOrder) => {
             )}
             {isAdmin && data.status !== 'Paid' && !hasPaidItems && (
               <ModalEditOrder order={data} />
+            )}
+            {isAdmin && (
+              <NotifyClientModal
+                order={{ id: data.id, order_number: data.order_number }}
+              />
             )}
           </div>
           {isAdmin ? (
