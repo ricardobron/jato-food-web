@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Home, LogOut, Package } from 'lucide-react';
+import { BarChart3, Home, LogOut, Package } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -15,6 +15,7 @@ export const Sidebar = () => {
   const menus = [
     { name: 'Home', route: '/admin', Icon: Home },
     { name: 'Produtos', route: '/admin/products', Icon: Package },
+    { name: 'Financeiro', route: '/admin/finance', Icon: BarChart3 },
   ];
 
   const isPageLogin = pathname.includes('admin/login');
