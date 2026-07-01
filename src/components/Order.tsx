@@ -11,12 +11,13 @@ import {
 } from '@/service/order';
 
 import { useSession } from 'next-auth/react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { ButtonStatusOrder, IOrderStatusComponent } from './ButtonStatusOrder';
 import { CartOrder } from './CartOrder';
 import { ModalCreateOrder } from './ModalCreateOrder';
 import { Loader } from 'lucide-react';
+import { InputSelect } from './InputSelect';
 
 export type Orders = Omit<IFindOrders, 'order_items'> & {
   order_items: IOrderItemComponent[];
@@ -28,6 +29,8 @@ export const Order = () => {
 
   const [orders, setOrders] = useState<Orders[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [selectedTable, setSelectedTable] = useState<string | undefined>('');
+
   const [buttonOrderStatus, setButtonStatus] =
     useState<IOrderStatusComponent>('All');
 
@@ -167,6 +170,19 @@ export const Order = () => {
     [socket]
   );
 
+  const tableOptions = useMemo(
+    () =>
+      Array.from(new Set(orders.map((o) => o.table)))
+        .filter(Boolean)
+        .sort((a, b) => String(a).localeCompare(String(b)))
+        .map((t) => ({ label: `Mesa ${t}`, value: String(t) })),
+    [orders]
+  );
+
+  const listToRender = selectedTable
+    ? selectedTableGroup?.orders ?? []
+    : filteredByStatus;
+
   return (
     <div className="flex w-[100%] flex-col items-center px-4 pt-6">
       {session.data?.user.role === 'ADMIN' && (
@@ -186,7 +202,7 @@ export const Order = () => {
           </p>
         ) : (
           <>
-            {filterOrder.map((pr) => (
+            {listToRender.map((pr) => (
               <CartOrder
                 key={pr.id}
                 data={pr}
