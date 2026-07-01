@@ -41,6 +41,7 @@ export interface IOrderItem {
   quantity: number;
   price: number;
   checked: boolean;
+  paid: boolean;
 }
 
 export interface IOrderItemComponent extends IOrderItem {
@@ -109,4 +110,47 @@ export const updateOrderStatus = async (
   status: OrderStatus
 ) => {
   await api.patch(`/order/${order_id}/status`, { status });
+};
+
+export interface IPaymentGroupItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  paid: boolean;
+}
+
+export interface IPaymentGroupOrder {
+  id: string;
+  order_number: number;
+  table: number;
+  status: OrderStatus;
+  items: IPaymentGroupItem[];
+}
+
+export interface IPaymentGroup {
+  phone_number: string;
+  outstanding_total: number;
+  orders: IPaymentGroupOrder[];
+}
+
+export const getPaymentGroup = async (
+  orderId: string
+): Promise<IPaymentGroup> => {
+  const response = await api.get<IPaymentGroup>(
+    `/order/${orderId}/payment-group`
+  );
+  return response.data;
+};
+
+export const createPayment = async (data: {
+  order_item_ids: string[];
+  mode: 'Cash' | 'Online';
+  received?: number;
+}): Promise<{ amount: number; change: number | null }> => {
+  const response = await api.post<{ amount: number; change: number | null }>(
+    '/order/payment',
+    data
+  );
+  return response.data;
 };
