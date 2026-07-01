@@ -9,6 +9,7 @@ import { AlertProductsOnCart } from './AlertProductsOnCart';
 import { signOut, useSession } from 'next-auth/react';
 import { LogOut } from 'lucide-react';
 import { Logo } from './Logo';
+import { NotificationBell } from './NotificationBell';
 
 export const HeaderClient = () => {
   const { data: user } = useSession();
@@ -57,13 +58,16 @@ export const HeaderClient = () => {
           Pedidos
         </h1>
         {user ? (
-          <button
-            onClick={() => signOut()}
-            title="Terminar sessão"
-            className="text-cream/70 transition-colors hover:text-cream"
-          >
-            <LogOut className="h-[24px] w-[24px] sm:h-[26px] sm:w-[26px]" />
-          </button>
+          <div className="flex items-center gap-3">
+            {user.user.role !== 'ADMIN' && <NotificationBell />}
+            <button
+              onClick={() => signOut()}
+              title="Terminar sessão"
+              className="text-cream/70 transition-colors hover:text-cream"
+            >
+              <LogOut className="h-[24px] w-[24px] sm:h-[26px] sm:w-[26px]" />
+            </button>
+          </div>
         ) : (
           <span className="w-[26px]" />
         )}
