@@ -38,6 +38,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.51.4",
     "react-perfect-scrollbar": "^1.5.8",
+    "recharts": "2.15.4",
     "socket.io-client": "^4.7.5",
     "sonner": "^1.4.41",
     "sweetalert2": "^11.12.2",
