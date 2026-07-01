@@ -75,7 +75,7 @@ export const Order = () => {
         const orderIndex = _clone.findIndex((pr) => pr.id === data.id);
 
         if (orderIndex !== -1) {
-          _clone[orderIndex].status = data.status;
+          _clone[orderIndex] = data;
         } else {
           _clone.push(data);
         }
