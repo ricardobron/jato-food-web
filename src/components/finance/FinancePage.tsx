@@ -30,17 +30,20 @@ export const FinancePage = () => {
   const periodRef = useRef(period);
   periodRef.current = period;
 
+  const reqIdRef = useRef(0);
+
   const load = useCallback(
     async (p: Period) => {
       const jwt = session.data?.jwt;
       if (!jwt) return;
+      const myId = ++reqIdRef.current;
       try {
         const data = await getFinanceSummary(jwt, { from: p.from, to: p.to });
-        setSummary(data);
+        if (myId === reqIdRef.current) setSummary(data);
       } catch {
         toast.error('Falha ao carregar dados financeiros');
       } finally {
-        setIsLoading(false);
+        if (myId === reqIdRef.current) setIsLoading(false);
       }
     },
     [session.data?.jwt]
