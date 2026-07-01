@@ -58,7 +58,7 @@ export function InputSelect({ onChange, options, value }: InputSelectProps) {
                 <CommandItem
                   key={_option.value}
                   value={_option.value}
-                  onSelect={(currentValue) => {
+                  onSelect={(currentValue: string) => {
                     onChange(currentValue === value ? '' : currentValue);
                     setOpen(false);
                   }}

@@ -180,8 +180,8 @@ export const Order = () => {
   );
 
   const listToRender = selectedTable
-    ? selectedTableGroup?.orders ?? []
-    : filteredByStatus;
+    ? filterOrder.filter((order) => String(order.table) === selectedTable)
+    : filterOrder;
 
   return (
     <div className="flex w-[100%] flex-col items-center px-4 pt-6">
