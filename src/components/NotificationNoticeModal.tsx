@@ -13,11 +13,17 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { primeAudio } from '@/lib/notificationFeedback';
+import { useSession } from 'next-auth/react';
+import { subscribeToPush } from '@/lib/pushSubscription';
+import { isIosSafariNotInstalled } from '@/lib/pwa';
 
 const STORAGE_KEY = 'jato_notif_notice_v1';
 
 export const NotificationNoticeModal = () => {
   const [open, setOpen] = useState(false);
+  const [showIosHint, setShowIosHint] = useState(false);
+  const session = useSession();
+  const jwt = session.data?.jwt;
 
   useEffect(() => {
     try {
@@ -25,6 +31,7 @@ export const NotificationNoticeModal = () => {
     } catch {
       // localStorage indisponível → não mostra
     }
+    setShowIosHint(isIosSafariNotInstalled());
   }, []);
 
   const dismiss = () => {
@@ -40,7 +47,10 @@ export const NotificationNoticeModal = () => {
     primeAudio();
     try {
       if (typeof Notification !== 'undefined') {
-        await Notification.requestPermission();
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted' && jwt) {
+          await subscribeToPush(jwt);
+        }
       }
     } catch {
       // ignore
@@ -74,6 +84,15 @@ export const NotificationNoticeModal = () => {
           Dados (RGPD). Pode desativar as notificações a qualquer momento nas
           definições do seu navegador.
         </div>
+
+        {showIosHint && (
+          <p className="text-xs leading-relaxed text-charcoal/60">
+            No iPhone/iPad, toca em{' '}
+            <span className="font-semibold">Partilhar</span> →{' '}
+            <span className="font-semibold">Adicionar ao ecrã principal</span>{' '}
+            para poderes receber notificações.
+          </p>
+        )}
 
         <DialogFooter className="gap-2 sm:gap-2">
           <Button type="button" variant="outline" onClick={dismiss}>
