@@ -91,3 +91,24 @@
       letter-spacing: -0.04em;
     }
   }
+
+@media print {
+  /* Esconde tudo menos a área de impressão do dashboard financeiro */
+  body * {
+    visibility: hidden;
+  }
+  #finance-print,
+  #finance-print * {
+    visibility: visible;
+  }
+  #finance-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 16px;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
