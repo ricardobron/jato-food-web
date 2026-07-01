@@ -15,6 +15,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { ButtonStatusOrder, IOrderStatusComponent } from './ButtonStatusOrder';
 import { CartOrder } from './CartOrder';
+import { ModalCreateOrder } from './ModalCreateOrder';
 import { Loader } from 'lucide-react';
 import { InputSelect } from './InputSelect';
 
@@ -33,27 +34,14 @@ export const Order = () => {
   const [buttonOrderStatus, setButtonStatus] =
     useState<IOrderStatusComponent>('All');
 
-  const filteredByStatus = useMemo(() => {
-    return orders.filter((order) =>
+  const filterOrder = orders
+    .filter((order) =>
       buttonOrderStatus === 'All' ? true : order.status === buttonOrderStatus
+    )
+    .sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
     );
-  }, [orders, buttonOrderStatus]);
-
-  const selectedTableGroup = useMemo(() => {
-    if (!selectedTable) return null;
-    const group = filteredByStatus
-      .filter((o) => String(o.table) === String(selectedTable))
-      .sort((a, b) => {
-        const aT = (a as any).updated_at ?? (a as any).created_at ?? 0;
-        const bT = (b as any).updated_at ?? (b as any).created_at ?? 0;
-        return bT - aT; // mais recente primeiro
-      });
-
-    return {
-      table: selectedTable,
-      orders: group,
-    };
-  }, [filteredByStatus, selectedTable]);
 
   //order created
   useEffect(() => {
@@ -95,7 +83,7 @@ export const Order = () => {
         const orderIndex = _clone.findIndex((pr) => pr.id === data.id);
 
         if (orderIndex !== -1) {
-          _clone[orderIndex].status = data.status;
+          _clone[orderIndex] = data;
         } else {
           _clone.push(data);
         }
@@ -196,42 +184,22 @@ export const Order = () => {
     : filteredByStatus;
 
   return (
-    <div className="pt-4 w-[100%] px-4 flex flex-col items-center">
+    <div className="flex w-[100%] flex-col items-center px-4 pt-6">
+      {session.data?.user.role === 'ADMIN' && (
+        <div className="mb-4 flex w-full justify-end">
+          <ModalCreateOrder />
+        </div>
+      )}
       <ButtonStatusOrder onChange={(value) => setButtonStatus(value as any)} />
 
-      {session.data?.user.role === 'ADMIN' && (
-        <>
-          <div className=" w-full mt-6 max-w-[640px] mx-auto flex justify-center gap-2 items-center">
-            <InputSelect
-              value={selectedTable || ''}
-              onChange={(v?: string) => setSelectedTable(v || '')}
-              options={[
-                { label: 'Todas as mesas', value: '' },
-                ...tableOptions,
-              ]}
-            />
-            {selectedTable && (
-              <button
-                className="text-sm underline"
-                onClick={() => setSelectedTable('')}
-              >
-                Limpar mesa
-              </button>
-            )}
-          </div>
-
-          {selectedTable && (
-            <h3 className="mt-4 text-lg font-semibold">
-              Mesa {selectedTable} — {selectedTableGroup?.orders.length ?? 0}{' '}
-              pedidos
-            </h3>
-          )}
-        </>
-      )}
-
-      <div className="flex flex-row gap-6 flex-wrap justify-center mt-4">
+      <div className="mt-6 flex flex-row flex-wrap justify-center gap-6">
         {isLoading ? (
-          <Loader size={30} className="animate-spin text-orange-400" />
+          <Loader size={30} className="animate-spin text-flame" />
+        ) : filterOrder.length === 0 ? (
+          <p className="mt-12 text-center text-charcoal/50">
+            Ainda não há pedidos por aqui. Assim que entrar um, aparece neste
+            instante.
+          </p>
         ) : (
           <>
             {listToRender.map((pr) => (

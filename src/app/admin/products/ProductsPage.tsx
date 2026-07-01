@@ -44,7 +44,7 @@ export const ProductsPage = () => {
   });
 
   if (isLoading) {
-    return <Loader size={30} className="animate-spin text-orange-400" />;
+    return <Loader size={30} className="animate-spin text-flame" />;
   }
 
   function AlertDeleteDevotional(product: AlertDialogProps) {
@@ -87,9 +87,16 @@ export const ProductsPage = () => {
   }
 
   return (
-    <div className="w-[100%] p-12">
-      <div className="flex justify-between items-center">
-        <h1 className="font-medium text-[24px]">Lista de Produtos</h1>
+    <div className="w-[100%] p-8 sm:p-12">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <span className="text-xs font-semibold uppercase tracking-wide text-flame">
+            Menu
+          </span>
+          <h1 className="font-display text-3xl font-bold text-charcoal">
+            Lista de produtos
+          </h1>
+        </div>
         <ModalEditProduct />
       </div>
       <Table>
@@ -108,7 +115,7 @@ export const ProductsPage = () => {
               <TableCell>{pr.price}</TableCell>
               <TableCell>
                 <Switch
-                  className="data-[state=checked]:bg-[#FAC400] "
+                  className="data-[state=checked]:bg-flame"
                   checked={pr.active}
                 />
               </TableCell>

@@ -6,9 +6,7 @@ export type InputTextProps = InputProps & { label: string };
 export function InputText({ label, ...props }: InputTextProps) {
   return (
     <div className="grid w-full max-w-sm items-center gap-1.5">
-      <Label className="font-Poppins font-normal text-[14px] text-gray-300">
-        {label}
-      </Label>
+      <Label className="text-sm font-medium text-charcoal/60">{label}</Label>
       <Input className="stroke" {...props} />
     </div>
   );

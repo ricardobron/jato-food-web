@@ -28,7 +28,7 @@ export const ListProducts = () => {
   });
 
   if (isLoading) {
-    return <Loader size={30} className="animate-spin text-orange-400" />;
+    return <Loader size={30} className="animate-spin text-flame" />;
   }
 
   return (
@@ -55,47 +55,59 @@ export const ListProducts = () => {
               <TableRow
                 key={pr.id}
                 className={cn(
-                  isActive ? 'border-b-2 border-b-[#FABF35] transition-all' : ''
+                  'transition-colors',
+                  isActive && 'bg-flame/5'
                 )}
               >
-                <TableCell className="">
-                  <p>{pr.name}</p>
-                  <p> {pr.price}€</p>
+                <TableCell>
+                  <p className="font-medium text-charcoal">{pr.name}</p>
+                  <p className="text-sm text-charcoal/50">{pr.price}€</p>
                 </TableCell>
-                <TableCell className="flex flex-row items-center gap-2">
-                  <button
-                    disabled={disableMinusButton}
-                    onClick={() =>
-                      updateProductAmount({
-                        product_id: pr.id,
-                        quantity: productCartQuantity - 1,
-                      })
-                    }
-                  >
-                    <MinusCircle />
-                  </button>
-                  <p>{productCartQuantity}</p>
-                  <button
-                    onClick={() =>
-                      addProduct({
-                        id: pr.id,
-                        name: pr.name,
-                        price: pr.price,
-                        quantity: productCartQuantity + 1,
-                      })
-                    }
-                  >
-                    <PlusCircle />
-                  </button>
+                <TableCell>
+                  <div className="flex flex-row items-center gap-2">
+                    <button
+                      disabled={disableMinusButton}
+                      onClick={() =>
+                        updateProductAmount({
+                          product_id: pr.id,
+                          quantity: productCartQuantity - 1,
+                        })
+                      }
+                      className="text-charcoal/60 transition-colors hover:text-flame disabled:opacity-30 disabled:hover:text-charcoal/60"
+                    >
+                      <MinusCircle className="h-6 w-6" />
+                    </button>
+                    <p className="w-5 text-center font-semibold">
+                      {productCartQuantity}
+                    </p>
+                    <button
+                      onClick={() =>
+                        addProduct({
+                          id: pr.id,
+                          name: pr.name,
+                          price: pr.price,
+                          quantity: productCartQuantity + 1,
+                        })
+                      }
+                      className="text-flame transition-transform hover:scale-110"
+                    >
+                      <PlusCircle className="h-6 w-6" />
+                    </button>
+                  </div>
                 </TableCell>
-                <TableCell>{subTotal}€</TableCell>
+                <TableCell className="font-medium">{subTotal}€</TableCell>
                 <TableCell>
                   <button
                     disabled={!productCartQuantity}
                     onClick={() => removeProduct(pr.id)}
                   >
                     <Trash
-                      className={cn(!productCartQuantity ? '' : 'text-red-400')}
+                      className={cn(
+                        'h-5 w-5 transition-colors',
+                        !productCartQuantity
+                          ? 'text-charcoal/20'
+                          : 'text-destructive hover:text-destructive/70'
+                      )}
                     />
                   </button>
                 </TableCell>

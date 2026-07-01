@@ -57,15 +57,28 @@ export const NewOrder = () => {
         showCancelButton: true,
         cancelButtonText: 'Cancelar',
         confirmButtonText: 'Confirmar',
-        confirmButtonColor: '#FABF35',
+        confirmButtonColor: '#FF5A1F',
+        cancelButtonColor: '#3A2E26',
       });
 
       if (result.isConfirmed) {
-        await createOrder({
-          products: cartOrder.map((product) => ({
+        const products = cart
+          .filter((product) => product.quantity > 0)
+          .map((product) => ({
             id: product.id,
             quantity: product.quantity,
-          })),
+          }));
+
+        if (products.length === 0) {
+          toast.warning('Pedido incompleto', {
+            description: 'Adiciona pelo menos um produto com quantidade',
+            duration: 8000,
+          });
+          return;
+        }
+
+        await createOrder({
+          products,
           table_number: String(table),
         });
 
@@ -92,17 +105,17 @@ export const NewOrder = () => {
           <InputText
             label="Mesa"
             type="number"
-            value={Number(table)}
+            value={table ?? ''}
             onChange={(e) => setTable(Number(e.target.value))}
             disabled
           />
         </div>
         <div>
           <button
-            className="p-2 rounded-lg text-white bg-[#FABF35] font-medium inline-flex gap-2"
+            className="jato-flame inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-semibold text-white shadow-md shadow-flame/25 transition-transform hover:scale-[1.02]"
             onClick={handleCreateOrder}
           >
-            <PlusCircle className="text-white" />
+            <PlusCircle className="h-5 w-5" />
             Criar pedido
           </button>
         </div>
@@ -110,10 +123,12 @@ export const NewOrder = () => {
 
       <ListProducts />
 
-      <footer className="flex flex-col items-end border-b-2 border-b-[#FABF35] p-2">
-        <div>
-          <span>TOTAL: </span>
-          <strong className="text-[14px]">{totalParsed}€</strong>
+      <footer className="mt-2 flex flex-col items-end rounded-full bg-charcoal px-5 py-2 text-cream">
+        <div className="font-display">
+          <span className="text-sm uppercase tracking-wide text-cream/70">
+            Total:{' '}
+          </span>
+          <strong className="text-lg text-ember">{totalParsed}€</strong>
         </div>
       </footer>
 

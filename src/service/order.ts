@@ -41,6 +41,7 @@ export interface IOrderItem {
   quantity: number;
   price: number;
   checked: boolean;
+  paid: boolean;
 }
 
 export interface IOrderItemComponent extends IOrderItem {
@@ -49,6 +50,7 @@ export interface IOrderItemComponent extends IOrderItem {
 
 export type IFindOrders = Order & {
   order_number: number;
+  phone_number: string;
   order_items: IOrderItem[];
 };
 
@@ -81,4 +83,75 @@ export const createOrder = async (data: ICreateOrder) => {
 
 export const updateOrder = async (data: IUpdateOrder) => {
   await api.put(`/order/${data.order_id}`, { status: data.status });
+};
+
+interface IProductInput {
+  id: string;
+  quantity: number;
+}
+
+export const createOrderAdmin = async (data: {
+  table_number: string;
+  phone_number: string;
+  products: IProductInput[];
+}) => {
+  await api.post('/order/admin', data);
+};
+
+export const updateOrderItems = async (
+  order_id: string,
+  products: IProductInput[]
+) => {
+  await api.patch(`/order/${order_id}/items`, { products });
+};
+
+export const updateOrderStatus = async (
+  order_id: string,
+  status: OrderStatus
+) => {
+  await api.patch(`/order/${order_id}/status`, { status });
+};
+
+export interface IPaymentGroupItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  paid: boolean;
+}
+
+export interface IPaymentGroupOrder {
+  id: string;
+  order_number: number;
+  table: number;
+  status: OrderStatus;
+  created_at: string;
+  items: IPaymentGroupItem[];
+}
+
+export interface IPaymentGroup {
+  phone_number: string;
+  outstanding_total: number;
+  orders: IPaymentGroupOrder[];
+}
+
+export const getPaymentGroup = async (
+  orderId: string
+): Promise<IPaymentGroup> => {
+  const response = await api.get<IPaymentGroup>(
+    `/order/${orderId}/payment-group`
+  );
+  return response.data;
+};
+
+export const createPayment = async (data: {
+  order_item_ids: string[];
+  mode: 'Cash' | 'Online';
+  received?: number;
+}): Promise<{ amount: number; change: number | null }> => {
+  const response = await api.post<{ amount: number; change: number | null }>(
+    '/order/payment',
+    data
+  );
+  return response.data;
 };

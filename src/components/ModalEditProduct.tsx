@@ -114,9 +114,9 @@ export const ModalEditProduct = ({ data }: ModalEditProductProps) => {
         {!data ? (
           <Button
             onClick={handleOpenModal}
-            className="flex gap-2 bg-[#FAC400] text-white py-2 px-4 hover:bg-[#FAC400]/60 items-center justify-center mb-6 text-sm font-medium transition duration-300 rounded-2xl  focus:ring-2 focus:ring-gray-300"
+            className="jato-flame mb-6 flex items-center justify-center gap-2 rounded-full px-5 py-2 text-sm font-semibold text-white shadow-md shadow-flame/25 transition-transform hover:scale-[1.02]"
           >
-            <PlusCircle />
+            <PlusCircle className="h-5 w-5" />
             Adicionar produto
           </Button>
         ) : (
@@ -177,7 +177,7 @@ export const ModalEditProduct = ({ data }: ModalEditProductProps) => {
                     <FormLabel className="mb-2">Ativo</FormLabel>
                     <FormControl>
                       <Switch
-                        className="data-[state=checked]:bg-[#FAC400]"
+                        className="data-[state=checked]:bg-flame"
                         checked={field.value}
                         onCheckedChange={field.onChange}
                       />
@@ -190,7 +190,7 @@ export const ModalEditProduct = ({ data }: ModalEditProductProps) => {
 
             <DialogFooter>
               <Button
-                className="bg-[#FAC400] text-white py-2 px-4 hover:bg-[#FAC400]/60"
+                className="jato-flame rounded-full px-5 py-2 font-semibold text-white shadow-md shadow-flame/25"
                 type="submit"
                 disabled={
                   form.formState.isLoading || form.formState.isSubmitting

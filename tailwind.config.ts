@@ -19,12 +19,47 @@ const config = {
     },
     extend: {
       fontFamily: {
-        Poppins: ['Poppins', 'sans-serif'],
-        Roboto: ['Roboto', 'sans-serif'],
+        display: ['var(--font-sora)', 'sans-serif'],
+        sans: ['var(--font-inter)', 'sans-serif'],
+        // legacy aliases kept so existing class names keep working
+        Poppins: ['var(--font-sora)', 'sans-serif'],
+        Roboto: ['var(--font-inter)', 'sans-serif'],
       },
       colors: {
+        // Jato brand palette — "Bold & appetizing"
+        flame: {
+          DEFAULT: '#FF5A1F',
+          50: '#FFF1EB',
+          100: '#FFE0D2',
+          400: '#FF7A47',
+          500: '#FF5A1F',
+          600: '#E8470F',
+          700: '#C23A0C',
+        },
+        ember: {
+          DEFAULT: '#FFB627',
+          50: '#FFF6E2',
+          400: '#FFC759',
+          500: '#FFB627',
+        },
+        charcoal: {
+          DEFAULT: '#1A1410',
+          800: '#2A211B',
+          700: '#3A2E26',
+        },
+        cream: {
+          DEFAULT: '#FFF8F0',
+          100: '#FBEFE3',
+        },
+        status: {
+          preparing: '#F6A609',
+          delivered: '#2563EB',
+          paid: '#16A34A',
+        },
+        // keep `orange-600` referencing the new flame so legacy classes restyle
         orange: {
-          600: '#FF6F2D',
+          400: '#FF7A47',
+          600: '#FF5A1F',
         },
         gray: {
           300: '#9C98A6',

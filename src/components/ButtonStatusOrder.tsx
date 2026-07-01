@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { OrderStatus } from '@/service/order';
+import { ORDER_STATUS_META } from '@/constants/orderStatus';
 import { useState } from 'react';
 
 interface IPropsButtonStatusOrder {
@@ -17,48 +18,41 @@ export const ButtonStatusOrder = ({ onChange }: IPropsButtonStatusOrder) => {
     onChange?.(value);
   }
 
-  const orderStatus = [
-    {
-      type: 'All',
-      name: 'Todos',
-      style: 'text-black border-2 border-black',
-      onClick: () => handleChangeButtonStatusOrder('All'),
-    },
-    {
-      type: 'Preparing',
-      name: 'A preparar',
-      style: 'border-2 border-[#ADD8E6] bg-[#ADD8E6] px-2',
-      onClick: () => handleChangeButtonStatusOrder('Preparing'),
-    },
-    {
-      type: 'Delivered',
-      name: 'Entregue',
-      style: 'border-2 border-[#006400] bg-[#006400] px-2',
-      onClick: () => handleChangeButtonStatusOrder('Delivered'),
-    },
-    {
-      type: 'Paid',
-      name: 'Pago',
-      style: 'border-2 border-[#32CD32] bg-[#32CD32] px-2',
-      onClick: () => handleChangeButtonStatusOrder('Paid'),
-    },
+  const filters: { type: IOrderStatusComponent; name: string }[] = [
+    { type: 'All', name: 'Todos' },
+    ...(Object.keys(ORDER_STATUS_META) as OrderStatus[]).map((status) => ({
+      type: status,
+      name: ORDER_STATUS_META[status].label,
+    })),
   ];
 
   return (
-    <div className="flex justify-center items-center flex-wrap gap-2">
-      {orderStatus.map((orderButton) => (
-        <button
-          key={orderButton.type}
-          onClick={orderButton.onClick}
-          className={cn(
-            'p-1 rounded-lg',
-            orderButton.style,
-            buttonStatusOrder === orderButton.type ? 'font-semibold' : ''
-          )}
-        >
-          <p>{orderButton.name}</p>
-        </button>
-      ))}
+    <div className="flex flex-wrap items-center justify-center gap-2">
+      {filters.map((filter) => {
+        const isActive = buttonStatusOrder === filter.type;
+        const activeClass =
+          filter.type === 'All'
+            ? 'jato-flame text-white border-transparent shadow-sm shadow-flame/30'
+            : cn(
+                ORDER_STATUS_META[filter.type as OrderStatus].solid,
+                'border-transparent'
+              );
+
+        return (
+          <button
+            key={filter.type}
+            onClick={() => handleChangeButtonStatusOrder(filter.type)}
+            className={cn(
+              'rounded-full border-2 px-4 py-1.5 text-sm font-semibold transition-colors',
+              isActive
+                ? activeClass
+                : 'border-charcoal/15 text-charcoal/70 hover:border-charcoal/30 hover:text-charcoal'
+            )}
+          >
+            {filter.name}
+          </button>
+        );
+      })}
     </div>
   );
 };

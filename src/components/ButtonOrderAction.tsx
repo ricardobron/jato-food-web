@@ -2,6 +2,7 @@ import { OrderStatus, updateOrder } from '@/service/order';
 import { cn } from '@/lib/utils';
 import { type ClassValue } from 'clsx';
 import { useSession } from 'next-auth/react';
+import { ORDER_STATUS_META } from '@/constants/orderStatus';
 
 type ButtonOrderProps = {
   status: OrderStatus;
@@ -37,27 +38,30 @@ export const ButtonOrderAction = ({ status, order_id }: ButtonOrderProps) => {
     }
   > = {
     Preparing: {
-      name: isClient ? 'Em preparação' : 'Entregar',
+      name: isClient ? 'Em preparação' : 'Marcar entregue',
       onClick: () => handleClickButtonOrder('Delivered'),
-      style: 'border-2 border-[#ADD8E6] bg-[#ADD8E6]/10 text-[#ADD8E6]',
+      style: cn('border-2', ORDER_STATUS_META.Preparing.border, ORDER_STATUS_META.Preparing.soft),
       disabled: isClient,
     },
     Delivered: {
-      name: 'Entregue / Pagar',
-      style: 'border-2 border-[#006400] bg-[#006400]/10 text-[#006400]',
+      name: isClient ? 'Entregue' : 'Marcar pago',
+      style: cn('border-2', ORDER_STATUS_META.Delivered.border, ORDER_STATUS_META.Delivered.soft),
       disabled: isClient,
       onClick: () => handleClickButtonOrder('Paid'),
     },
     Paid: {
       name: 'Pago',
-      style: 'border-2 border-[#32CD32] bg-[#32CD32]/10 text-[#32CD32]',
+      style: cn('border-2', ORDER_STATUS_META.Paid.border, ORDER_STATUS_META.Paid.soft),
       disabled: true,
     },
   };
 
   return (
     <button
-      className={cn('p-1 rounded-lg', configButton[status]?.style)}
+      className={cn(
+        'rounded-full px-3 py-1.5 text-sm font-semibold transition-opacity disabled:cursor-default disabled:opacity-90 enabled:hover:opacity-80',
+        configButton[status]?.style
+      )}
       disabled={configButton[status]?.disabled}
       onClick={configButton[status]?.onClick}
     >
