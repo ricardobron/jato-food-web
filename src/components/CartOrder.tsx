@@ -19,101 +19,105 @@ interface IPropsCartOrder {
 export const CartOrder = ({ data, handleCheckOrderItem }: IPropsCartOrder) => {
   const { data: user } = useSession();
   const isAdmin = user?.user.role === 'ADMIN';
-  const formatedDate = format(data.created_at, 'PP, HH:mm', { locale: pt });
+  const formatedDate = format(data.created_at, "d 'de' MMM · HH:mm", {
+    locale: pt,
+  });
 
   const status = ORDER_STATUS_META[data.status];
+  const hasPaidItems = data.order_items.some((it) => it.paid);
 
   const total = data.order_items
     .reduce((acc, obj) => acc + obj.price * obj.quantity, 0)
     .toFixed(2);
 
   return (
-    <div className="w-[341px] overflow-hidden rounded-3xl border border-charcoal/10 bg-white pb-3 shadow-sm transition-shadow hover:shadow-md">
+    <div className="w-[341px] overflow-hidden rounded-3xl border border-charcoal/10 bg-white shadow-sm transition-shadow hover:shadow-md">
       {/* status spine */}
       <div className={cn('h-1.5 w-full', status.solid)} />
 
-      <div className="mt-3 flex flex-col px-5">
-        <div className="flex flex-row items-start justify-between">
+      <div className="flex flex-col px-5 pb-4 pt-4">
+        {/* header */}
+        <div className="flex items-start justify-between gap-2">
           <div>
             <p className="font-display text-base font-bold text-charcoal">
               Pedido #{data.order_number}
             </p>
-            <span className="text-sm text-charcoal/50">{formatedDate}</span>
+            <span className="text-xs text-charcoal/45">{formatedDate}</span>
           </div>
-          <div className="text-right">
+          <div className="flex flex-col items-end gap-1.5">
             <span className="inline-flex rounded-full bg-charcoal px-2.5 py-1 text-xs font-semibold text-cream">
               Mesa {data.table}
             </span>
             {isAdmin && data.status !== 'Paid' ? (
-              <div className="mt-1.5">
-                <OrderStatusSelect orderId={data.id} status={data.status} />
-              </div>
+              <OrderStatusSelect orderId={data.id} status={data.status} />
             ) : (
-              <p
+              <span
                 className={cn(
-                  'mt-1.5 inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold',
+                  'inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold',
                   status.soft
                 )}
               >
                 {status.label}
-              </p>
+              </span>
             )}
           </div>
         </div>
 
-        <div className="mt-4 space-y-2.5">
-          {data.order_items.map((order_item, index) => (
-            <div
-              className="flex flex-row items-center border-b border-charcoal/10 pb-2 text-[15px]"
-              key={index}
-            >
-              {user?.user.role === 'ADMIN' && (
-                <>
-                  {order_item.loading ? (
-                    <Loader className="mr-2 h-4 w-4 animate-spin text-flame" />
+        {/* items */}
+        <ul className="mt-4 divide-y divide-charcoal/5">
+          {data.order_items.map((order_item) => {
+            const struck = order_item.checked || order_item.paid;
+            return (
+              <li key={order_item.id} className="flex items-center gap-2.5 py-2">
+                {isAdmin &&
+                  (order_item.loading ? (
+                    <Loader className="h-4 w-4 shrink-0 animate-spin text-flame" />
                   ) : (
                     <input
                       type="checkbox"
-                      className="mr-2.5 h-4 w-4 accent-flame"
+                      className="h-4 w-4 shrink-0 accent-flame"
                       checked={order_item.checked}
                       onChange={(e) =>
                         handleCheckOrderItem(order_item.id, e.target.checked)
                       }
                     />
+                  ))}
+                <span
+                  className={cn(
+                    'flex-1 text-[15px] text-charcoal',
+                    struck && 'text-charcoal/40 line-through'
                   )}
-                </>
-              )}
-              <p
-                className={cn(
-                  'flex-1',
-                  (order_item.checked || order_item.paid) &&
-                    'text-charcoal/40 line-through'
-                )}
-              >
-                {order_item.name}
-              </p>
-              <p className="mr-4 text-charcoal/60">{order_item.price}€</p>
-              <p className="w-[55px] text-end font-medium">
-                Qtd: {order_item.quantity}
-              </p>
-              {order_item.paid && (
-                <span className="ml-2 rounded-full bg-status-paid/10 px-2 text-xs font-semibold text-status-paid">
-                  pago
+                >
+                  {order_item.name}{' '}
+                  <span className="text-charcoal/40">×{order_item.quantity}</span>
                 </span>
-              )}
-            </div>
-          ))}
+                {order_item.paid && (
+                  <span className="rounded-full bg-status-paid/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-status-paid">
+                    pago
+                  </span>
+                )}
+                <span className="w-16 shrink-0 text-right text-sm font-semibold text-charcoal">
+                  {(order_item.price * order_item.quantity).toFixed(2)}€
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* total */}
+        <div className="mt-3 flex items-baseline justify-between border-t border-charcoal/10 pt-3">
+          <span className="text-xs text-charcoal/45">
+            {data.order_items.length} produto
+            {data.order_items.length === 1 ? '' : 's'}
+          </span>
+          <p className="font-display text-lg font-bold text-charcoal">
+            Total <span className="text-flame">{total}€</span>
+          </p>
         </div>
 
-        <p className="mt-3 self-end font-display text-base font-bold text-charcoal">
-          Total: <span className="text-flame">{total}€</span>
-        </p>
-        <div className="mt-2 flex flex-row items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-charcoal/50">
-              {data.order_items.length} produto
-              {data.order_items.length === 1 ? '' : 's'}
-            </span>
+        {/* actions */}
+        <div className="mt-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
             {isAdmin && (
               <OrderCustomerPopover
                 phone={data.phone_number}
@@ -121,10 +125,15 @@ export const CartOrder = ({ data, handleCheckOrderItem }: IPropsCartOrder) => {
                 createdAt={data.created_at}
               />
             )}
-            {isAdmin && data.status !== 'Paid' && <ModalEditOrder order={data} />}
-            {isAdmin && data.status !== 'Paid' && <PaymentDrawer order={data} />}
+            {isAdmin && data.status !== 'Paid' && !hasPaidItems && (
+              <ModalEditOrder order={data} />
+            )}
           </div>
-          <ButtonOrderAction status={data.status} order_id={data.id} />
+          {isAdmin ? (
+            data.status === 'Delivered' && <PaymentDrawer order={data} />
+          ) : (
+            <ButtonOrderAction status={data.status} order_id={data.id} />
+          )}
         </div>
       </div>
     </div>

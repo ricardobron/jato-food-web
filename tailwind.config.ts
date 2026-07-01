@@ -53,7 +53,7 @@ const config = {
         },
         status: {
           preparing: '#F6A609',
-          delivered: '#2E8B57',
+          delivered: '#2563EB',
           paid: '#16A34A',
         },
         // keep `orange-600` referencing the new flame so legacy classes restyle

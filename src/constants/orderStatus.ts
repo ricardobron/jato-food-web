@@ -31,7 +31,7 @@ export const ORDER_STATUS_META: Record<
     solid: 'bg-status-delivered text-white',
     soft: 'bg-status-delivered/10 text-status-delivered',
     border: 'border-status-delivered',
-    hex: '#2E8B57',
+    hex: '#2563EB',
   },
   Paid: {
     label: 'Pago',
