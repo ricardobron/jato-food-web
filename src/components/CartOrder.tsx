@@ -9,6 +9,7 @@ import { ORDER_STATUS_META } from '@/constants/orderStatus';
 import { OrderCustomerPopover } from './OrderCustomerPopover';
 import { OrderStatusSelect } from './OrderStatusSelect';
 import { ModalEditOrder } from './ModalEditOrder';
+import { PaymentDrawer } from './PaymentDrawer';
 
 interface IPropsCartOrder {
   data: Orders;
@@ -85,7 +86,8 @@ export const CartOrder = ({ data, handleCheckOrderItem }: IPropsCartOrder) => {
               <p
                 className={cn(
                   'flex-1',
-                  order_item.checked && 'text-charcoal/40 line-through'
+                  (order_item.checked || order_item.paid) &&
+                    'text-charcoal/40 line-through'
                 )}
               >
                 {order_item.name}
@@ -94,6 +96,11 @@ export const CartOrder = ({ data, handleCheckOrderItem }: IPropsCartOrder) => {
               <p className="w-[55px] text-end font-medium">
                 Qtd: {order_item.quantity}
               </p>
+              {order_item.paid && (
+                <span className="ml-2 rounded-full bg-status-paid/10 px-2 text-xs font-semibold text-status-paid">
+                  pago
+                </span>
+              )}
             </div>
           ))}
         </div>
@@ -115,6 +122,7 @@ export const CartOrder = ({ data, handleCheckOrderItem }: IPropsCartOrder) => {
               />
             )}
             {isAdmin && data.status !== 'Paid' && <ModalEditOrder order={data} />}
+            {isAdmin && data.status !== 'Paid' && <PaymentDrawer order={data} />}
           </div>
           <ButtonOrderAction status={data.status} order_id={data.id} />
         </div>
