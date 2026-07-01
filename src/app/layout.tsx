@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 import { Inter, Sora } from 'next/font/google';
 import './globals.css';
@@ -24,6 +24,19 @@ const sora = Sora({
 export const metadata: Metadata = {
   title: 'Jato · Pede num jato',
   description: 'Jato — pedidos de comida à mesa, rápidos como um jato.',
+  icons: {
+    icon: '/icons/icon-192.png',
+    apple: '/icons/apple-touch-icon.png',
+  },
+  appleWebApp: {
+    capable: true,
+    title: 'JATO',
+    statusBarStyle: 'default',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#ffffff',
 };
 
 import 'react-perfect-scrollbar/dist/css/styles.css';
