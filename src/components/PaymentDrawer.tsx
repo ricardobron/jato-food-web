@@ -106,6 +106,7 @@ export const PaymentDrawer = ({ order }: Props) => {
 
   return (
     <Drawer
+      direction="right"
       open={open}
       onOpenChange={(v) => {
         setOpen(v);
@@ -119,13 +120,14 @@ export const PaymentDrawer = ({ order }: Props) => {
       <DrawerTrigger asChild>
         <button
           title="Pagar"
-          className="text-charcoal/50 transition-colors hover:text-flame"
+          className="jato-flame inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold text-white shadow-sm shadow-flame/25 transition-transform hover:scale-[1.02]"
         >
           <Wallet className="h-4 w-4" />
+          Pagar
         </button>
       </DrawerTrigger>
       <DrawerContent>
-        <div className="mx-auto w-full max-w-md overflow-y-auto px-4 pb-8 max-h-[85vh]">
+        <div className="flex h-full w-full flex-col overflow-y-auto px-4 pb-8">
           <DrawerHeader>
             <DrawerTitle className="font-display">
               Pagamento · {group?.phone_number ?? ''}

@@ -44,7 +44,7 @@ export const CartOrder = ({ data, handleCheckOrderItem }: IPropsCartOrder) => {
             <span className="inline-flex rounded-full bg-charcoal px-2.5 py-1 text-xs font-semibold text-cream">
               Mesa {data.table}
             </span>
-            {isAdmin ? (
+            {isAdmin && data.status !== 'Paid' ? (
               <div className="mt-1.5">
                 <OrderStatusSelect orderId={data.id} status={data.status} />
               </div>

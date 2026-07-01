@@ -19,7 +19,7 @@ interface Props {
   status: OrderStatus;
 }
 
-const ORDER: OrderStatus[] = ['Preparing', 'Delivered', 'Paid'];
+const ORDER: OrderStatus[] = ['Preparing', 'Delivered'];
 
 export const OrderStatusSelect = ({ orderId, status }: Props) => {
   const [value, setValue] = useState<OrderStatus>(status);
