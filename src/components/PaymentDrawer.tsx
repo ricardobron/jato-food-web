@@ -86,7 +86,7 @@ export const PaymentDrawer = ({ order }: Props) => {
     setSaving(true);
     try {
       const res = await createPayment({
-        order_item_ids: Array.from(selected),
+        order_item_ids: Array.from(selected).filter((id) => unpaidItems.has(id)),
         mode,
         received: mode === 'Cash' ? Number(received) : undefined,
       });
@@ -104,7 +104,17 @@ export const PaymentDrawer = ({ order }: Props) => {
   }
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet
+      open={open}
+      onOpenChange={(v) => {
+        setOpen(v);
+        if (!v) {
+          setSelected(new Set());
+          setMode('Cash');
+          setReceived('');
+        }
+      }}
+    >
       <SheetTrigger asChild>
         <button
           title="Pagar"
@@ -232,6 +242,7 @@ export const PaymentDrawer = ({ order }: Props) => {
             </div>
 
             <button
+              type="button"
               onClick={handlePay}
               disabled={saving || selected.size === 0}
               className="jato-flame w-full rounded-full py-2.5 font-semibold text-white disabled:opacity-60"
