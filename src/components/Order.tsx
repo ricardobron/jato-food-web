@@ -31,9 +31,14 @@ export const Order = () => {
   const [buttonOrderStatus, setButtonStatus] =
     useState<IOrderStatusComponent>('All');
 
-  const filterOrder = orders.filter((order) =>
-    buttonOrderStatus === 'All' ? true : order.status === buttonOrderStatus
-  );
+  const filterOrder = orders
+    .filter((order) =>
+      buttonOrderStatus === 'All' ? true : order.status === buttonOrderStatus
+    )
+    .sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    );
 
   //order created
   useEffect(() => {

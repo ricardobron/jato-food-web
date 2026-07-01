@@ -60,11 +60,23 @@ export const NewOrder = () => {
       });
 
       if (result.isConfirmed) {
-        await createOrder({
-          products: cart.map((product) => ({
+        const products = cart
+          .filter((product) => product.quantity > 0)
+          .map((product) => ({
             id: product.id,
             quantity: product.quantity,
-          })),
+          }));
+
+        if (products.length === 0) {
+          toast.warning('Pedido incompleto', {
+            description: 'Adiciona pelo menos um produto com quantidade',
+            duration: 8000,
+          });
+          return;
+        }
+
+        await createOrder({
+          products,
           table_number: String(table),
         });
 
@@ -91,7 +103,7 @@ export const NewOrder = () => {
           <InputText
             label="Mesa"
             type="number"
-            value={Number(table)}
+            value={table ?? ''}
             onChange={(e) => setTable(Number(e.target.value))}
             disabled
           />

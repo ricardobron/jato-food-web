@@ -125,6 +125,7 @@ export interface IPaymentGroupOrder {
   order_number: number;
   table: number;
   status: OrderStatus;
+  created_at: string;
   items: IPaymentGroupItem[];
 }
 

@@ -31,11 +31,11 @@ export const CartOrder = ({ data, handleCheckOrderItem }: IPropsCartOrder) => {
     .toFixed(2);
 
   return (
-    <div className="w-[341px] overflow-hidden rounded-3xl border border-charcoal/10 bg-white shadow-sm transition-shadow hover:shadow-md">
+    <div className="flex w-[341px] flex-col self-stretch overflow-hidden rounded-3xl border border-charcoal/10 bg-white shadow-sm transition-shadow hover:shadow-md">
       {/* status spine */}
       <div className={cn('h-1.5 w-full', status.solid)} />
 
-      <div className="flex flex-col px-5 pb-4 pt-4">
+      <div className="flex flex-1 flex-col px-5 pb-4 pt-4">
         {/* header */}
         <div className="flex items-start justify-between gap-2">
           <div>
@@ -105,7 +105,7 @@ export const CartOrder = ({ data, handleCheckOrderItem }: IPropsCartOrder) => {
         </ul>
 
         {/* total */}
-        <div className="mt-3 flex items-baseline justify-between border-t border-charcoal/10 pt-3">
+        <div className="mt-auto flex items-baseline justify-between border-t border-charcoal/10 pt-3">
           <span className="text-xs text-charcoal/45">
             {data.order_items.length} produto
             {data.order_items.length === 1 ? '' : 's'}
