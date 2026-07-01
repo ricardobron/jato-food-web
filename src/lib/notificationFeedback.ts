@@ -49,23 +49,7 @@ function vibrate(): void {
   }
 }
 
-function systemNotify(message: string): void {
-  try {
-    if (
-      typeof document !== 'undefined' &&
-      document.hidden &&
-      typeof Notification !== 'undefined' &&
-      Notification.permission === 'granted'
-    ) {
-      new Notification('JATO', { body: message });
-    }
-  } catch {
-    // ignore
-  }
-}
-
-export function notificationFeedback(message: string): void {
+export function notificationFeedback(): void {
   vibrate();
   playBeep();
-  systemNotify(message);
 }

@@ -69,7 +69,7 @@ export const NotificationBell = () => {
       ]);
       setUnread((u) => u + 1);
       toast(data.message, { closeButton: true });
-      notificationFeedback(data.message);
+      notificationFeedback();
     };
     socket.on('client_notification', handler);
     return () => {
