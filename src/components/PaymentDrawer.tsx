@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   Drawer,
   DrawerContent,
+  DrawerDescription,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -91,7 +92,7 @@ export const PaymentDrawer = ({ order }: Props) => {
         received: mode === 'Cash' ? Number(received) : undefined,
       });
       toast.success(
-        res.change ? `Pago. Troco: ${res.change}€` : 'Pagamento registado'
+        res.change != null ? `Pago. Troco: ${res.change}€` : 'Pagamento registado'
       );
       setSelected(new Set());
       setReceived('');
@@ -129,6 +130,7 @@ export const PaymentDrawer = ({ order }: Props) => {
             <DrawerTitle className="font-display">
               Pagamento · {group?.phone_number ?? ''}
             </DrawerTitle>
+            <DrawerDescription className="sr-only">Selecione os itens a pagar</DrawerDescription>
           </DrawerHeader>
 
           {isLoading ? (
