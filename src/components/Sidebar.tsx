@@ -6,6 +6,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { ModalTablePrinter } from './ModalTablePrinter';
+import { KeepAliveToggle } from './KeepAliveToggle';
 
 export const Sidebar = () => {
   const session = useSession();
@@ -54,6 +55,8 @@ export const Sidebar = () => {
             <div className="text-cream/70">
               <ModalTablePrinter />
             </div>
+
+            <KeepAliveToggle />
           </div>
 
           {user ? (

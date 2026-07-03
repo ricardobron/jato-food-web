@@ -4,6 +4,7 @@ import { Sidebar } from '@/components/Sidebar';
 import { usePathname } from 'next/navigation';
 
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { useKeepAliveRunner } from '@/hooks/useKeepAliveRunner';
 
 interface IAdminComponentPageProps {
   children: React.ReactNode;
@@ -11,6 +12,9 @@ interface IAdminComponentPageProps {
 
 export const AdminComponentPage = ({ children }: IAdminComponentPageProps) => {
   const pathname = usePathname();
+
+  // Corre o loop de keep-alive enquanto o toggle na sidebar estiver ligado.
+  useKeepAliveRunner();
 
   const isPageLogin = pathname.includes('admin/login');
 
