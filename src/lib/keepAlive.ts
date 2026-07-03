@@ -15,7 +15,7 @@ const PING_TIMEOUT_MS = 60 * 1000;
 
 // Endpoint leve. Se ainda não existir no backend, um 404 continua a
 // contar como tráfego e acorda o Render na mesma.
-const PING_URL = `${API_BASE_URL}/health`;
+const PING_URL = `${API_BASE_URL}health`;
 
 export type PingResult = 'awake' | 'unreachable';
 
