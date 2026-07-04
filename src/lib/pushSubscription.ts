@@ -1,4 +1,8 @@
-import { getVapidPublicKey, savePushSubscription } from '@/service/push';
+import {
+  getVapidPublicKey,
+  savePushSubscription,
+  deletePushSubscription,
+} from '@/service/push';
 
 export function isPushSupported(): boolean {
   return (
@@ -62,4 +66,31 @@ export async function ensurePushSubscription(jwt: string): Promise<void> {
     return;
   }
   await subscribeToPush(jwt);
+}
+
+export async function hasActivePushSubscription(): Promise<boolean> {
+  if (!isPushSupported()) return false;
+  try {
+    const registration = await navigator.serviceWorker.getRegistration();
+    if (!registration) return false;
+    const subscription = await registration.pushManager.getSubscription();
+    return !!subscription;
+  } catch {
+    return false;
+  }
+}
+
+export async function unsubscribeFromPush(jwt: string): Promise<void> {
+  if (!isPushSupported()) return;
+  try {
+    const registration = await navigator.serviceWorker.getRegistration();
+    if (!registration) return;
+    const subscription = await registration.pushManager.getSubscription();
+    if (!subscription) return;
+    const { endpoint } = subscription;
+    await subscription.unsubscribe();
+    await deletePushSubscription(jwt, endpoint);
+  } catch {
+    // best-effort: nunca partir a UI do cliente
+  }
 }

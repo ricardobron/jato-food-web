@@ -17,6 +17,13 @@ import {
   markNotificationsRead,
 } from '@/service/notification';
 import { notificationFeedback, primeAudio } from '@/lib/notificationFeedback';
+import {
+  isPushSupported,
+  subscribeToPush,
+  unsubscribeFromPush,
+  hasActivePushSubscription,
+} from '@/lib/pushSubscription';
+import { Button } from '@/components/ui/button';
 
 interface SocketNotification {
   id: string;
@@ -33,7 +40,54 @@ export const NotificationBell = () => {
   const [items, setItems] = useState<INotification[]>([]);
   const [unread, setUnread] = useState(0);
 
+  type PushState = 'loading' | 'enabled' | 'disabled' | 'blocked' | 'unsupported';
+  const [pushState, setPushState] = useState<PushState>('loading');
+
   const jwt = session.data?.jwt;
+
+  const refreshPushState = useCallback(async () => {
+    if (!isPushSupported()) {
+      setPushState('unsupported');
+      return;
+    }
+    if (
+      typeof Notification !== 'undefined' &&
+      Notification.permission === 'denied'
+    ) {
+      setPushState('blocked');
+      return;
+    }
+    const active = await hasActivePushSubscription();
+    setPushState(active ? 'enabled' : 'disabled');
+  }, []);
+
+  const handleEnablePush = useCallback(async () => {
+    setPushState('loading');
+    primeAudio();
+    try {
+      if (typeof Notification !== 'undefined') {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted' && jwt) {
+          await subscribeToPush(jwt);
+          toast('Notificações ativadas');
+        } else if (permission === 'denied') {
+          toast('Notificações bloqueadas no navegador');
+        }
+      }
+    } catch {
+      // ignore
+    }
+    await refreshPushState();
+  }, [jwt, refreshPushState]);
+
+  const handleDisablePush = useCallback(async () => {
+    setPushState('loading');
+    if (jwt) {
+      await unsubscribeFromPush(jwt);
+    }
+    toast('Notificações desativadas');
+    await refreshPushState();
+  }, [jwt, refreshPushState]);
 
   // carregar ao ter token
   useEffect(() => {
@@ -77,15 +131,22 @@ export const NotificationBell = () => {
     };
   }, [socket]);
 
+  useEffect(() => {
+    refreshPushState();
+  }, [refreshPushState]);
+
   const onOpenChange = useCallback(
     (open: boolean) => {
-      if (open && unread > 0 && jwt) {
-        setUnread(0);
-        setItems((prev) => prev.map((n) => ({ ...n, read: true })));
-        markNotificationsRead(jwt).catch(() => {});
+      if (open) {
+        refreshPushState();
+        if (unread > 0 && jwt) {
+          setUnread(0);
+          setItems((prev) => prev.map((n) => ({ ...n, read: true })));
+          markNotificationsRead(jwt).catch(() => {});
+        }
       }
     },
-    [unread, jwt]
+    [unread, jwt, refreshPushState]
   );
 
   return (
@@ -133,6 +194,43 @@ export const NotificationBell = () => {
             ))
           )}
         </div>
+        {pushState !== 'unsupported' && (
+          <div className="border-t px-4 py-3">
+            {pushState === 'enabled' && (
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs text-charcoal/60">
+                  Notificações ativadas
+                </span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDisablePush}
+                >
+                  Desativar
+                </Button>
+              </div>
+            )}
+            {pushState === 'disabled' && (
+              <Button
+                type="button"
+                size="sm"
+                className="w-full"
+                onClick={handleEnablePush}
+              >
+                Ativar notificações
+              </Button>
+            )}
+            {pushState === 'blocked' && (
+              <p className="text-xs leading-relaxed text-charcoal/50">
+                Notificações bloqueadas. Reativa-as nas definições do navegador.
+              </p>
+            )}
+            {pushState === 'loading' && (
+              <p className="text-center text-xs text-charcoal/40">A carregar…</p>
+            )}
+          </div>
+        )}
       </PopoverContent>
     </Popover>
   );

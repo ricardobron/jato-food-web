@@ -18,3 +18,11 @@ export const savePushSubscription = async (
   api.defaults.headers.Authorization = `Bearer ${token}`;
   await api.post('/push/subscribe', subscription);
 };
+
+export const deletePushSubscription = async (
+  token: string,
+  endpoint: string
+): Promise<void> => {
+  api.defaults.headers.Authorization = `Bearer ${token}`;
+  await api.delete('/push/unsubscribe', { data: { endpoint } });
+};
