@@ -69,9 +69,11 @@ export const NotificationBell = () => {
         const permission = await Notification.requestPermission();
         if (permission === 'granted' && jwt) {
           await subscribeToPush(jwt);
+          toast('Notificações ativadas');
+        } else if (permission === 'denied') {
+          toast('Notificações bloqueadas no navegador');
         }
       }
-      toast('Notificações ativadas');
     } catch {
       // ignore
     }
