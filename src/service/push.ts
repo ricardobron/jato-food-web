@@ -24,5 +24,5 @@ export const deletePushSubscription = async (
   endpoint: string
 ): Promise<void> => {
   api.defaults.headers.Authorization = `Bearer ${token}`;
-  await api.delete('/push/unsubscribe', { data: { endpoint } });
+  await api.delete('/push/subscribe', { data: { endpoint } });
 };
